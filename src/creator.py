@@ -13,7 +13,8 @@ MATHML_STRING = '<mml:math xmlns:mml="http://www.w3.org/1998/Math/MathML" xmlns:
 
 MATH_DIC = {
     'addition' : '+',
-    'subtraction' : '-'
+    'subtraction' : '-',
+    'multiplication' : 'X'
 }
 # TIMESTAMP: datetime.now().strftime('%H:%M:%S')
 
@@ -29,10 +30,10 @@ def create_simple_sheet(name='additiontest2', type='addition', numproblems=50, m
     for r in range(rows):
         if (r != rows - 1):
             for c in range(COLS):
-                problem_set[r][c] = SimpleProblem(a=random.randint(1,20),b=2,operation=type)
+                problem_set[r][c] = SimpleProblem(a=random.randint(1,12),b=7,operation=type)
         else:
             for c in range(numproblems % COLS):
-                problem_set[r][c] = SimpleProblem(a=random.randint(1,20),b=2,operation=type)
+                problem_set[r][c] = SimpleProblem(a=random.randint(1,12),b=7,operation=type)
     # create doc
     d = Document()
     # create table, create var pointer
@@ -46,15 +47,19 @@ def create_simple_sheet(name='additiontest2', type='addition', numproblems=50, m
             if p == 0:
                 break
             a_tens_digit = str(int(p.a / 10))
+            # print(a_tens_digit)
             a_ones_digit = str(int(p.a % 10))
 
             b_tens_digit = str(int(p.b / 10))
+            # print(b_tens_digit)
             b_ones_digit = str(int(p.b % 10))
 
-            if a_tens_digit == 0:
-                a_tens_digit = ' '
-            if b_tens_digit == 0:
-                a_tens_digit = ' '
+            if p.a < 10:
+                # print('a is less than 10')
+                a_tens_digit = ''
+            if p.b < 10:
+                # print('b is less than 10')
+                b_tens_digit = ''
             mathml_string = MATHML_STRING.format(MATH_DIC[p.operation], a_tens_digit, a_ones_digit, b_tens_digit, b_ones_digit)
             tree = etree.fromstring(mathml_string)
             xslt = etree.parse(MML2OMML_PATH)
